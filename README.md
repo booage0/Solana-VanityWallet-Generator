@@ -2,7 +2,7 @@
 
 A command-line tool that generates Solana wallet addresses with custom prefixes. You can pick any pattern you want, and the tool will search through millions of generated wallets until it finds one that matches your desired prefix.
 
-For example, instead of a random address like `7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU`, you can have one that starts with your chosen text like `booAgeFR7dKivYZb9w3kR911Up5caXwbXQ9msCYtu6`.
+For example, instead of a random address like `7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU`, you can have one that starts with your chosen text like `VANITYFR7dKivYZb9w3kR911Up5caXwbXQ9msCYtu6`.
 
 ## Performance
 
@@ -101,3 +101,4 @@ Rare pattern matches are saved to `rare_wallets.txt`.
 ## License
 
 MIT
+
