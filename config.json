@@ -1,0 +1,20 @@
+{
+  "patterns": [
+    {
+      "pattern": "A",
+      "minLength": 8
+    },
+    {
+      "pattern": "7",
+      "minLength": 8
+    },
+    {
+      "pattern": "69",
+      "minLength": 5
+    },
+    {
+      "pattern": "41",
+      "minLength": 5
+    }
+  ]
+}
