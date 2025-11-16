@@ -71,7 +71,6 @@ const handleRareWallet = async (address, privateKey, pattern) => {
 const startVanitySearch = async (prefix) => {
   const startTime = Date.now();
   const numThreads = os.cpus().length;
-  const threadAttempts = new Map();
   let found = false;
 
   const binaryPath = process.platform === 'win32' 
@@ -86,10 +85,6 @@ const startVanitySearch = async (prefix) => {
   });
 
   let outputBuffer = '';
-
-  const getTotalAttempts = () => {
-    return Array.from(threadAttempts.values()).reduce((sum, count) => sum + count, 0);
-  };
 
   rustProcess.stdout.on('data', async (data) => {
     outputBuffer += data.toString();
@@ -106,7 +101,7 @@ const startVanitySearch = async (prefix) => {
           found = true;
           
           const elapsed = Date.now() - startTime;
-          const totalAttempts = getTotalAttempts() + msg.attempts;
+          const totalAttempts = msg.attempts;
           
           rustProcess.stdin.write('stop\n');
           rustProcess.kill();
@@ -131,9 +126,7 @@ const startVanitySearch = async (prefix) => {
         } else if (msg.type === 'rare') {
           await handleRareWallet(msg.address, msg.private_key, msg.pattern);
         } else if (msg.type === 'progress') {
-          threadAttempts.set(msg.tid, msg.attempts);
-          
-          const totalAttempts = getTotalAttempts();
+          const totalAttempts = msg.attempts;
           const elapsed = Date.now() - startTime;
           const elapsedSeconds = elapsed / 1000;
           const walletsPerSecondNum = totalAttempts > 0 && elapsedSeconds > 0 
