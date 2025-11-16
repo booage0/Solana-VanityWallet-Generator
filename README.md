@@ -2,13 +2,23 @@
 
 A command-line tool that generates Solana wallet addresses with custom prefixes. You can pick any pattern you want, and the tool will search through millions of generated wallets until it finds one that matches your desired prefix.
 
-For example, instead of a random address like `7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU`, you can have one that starts with your chosen text like `VANITYFR7dKivYZb9w3kR911Up5caXwbXQ9msCYtu6`.
+For example, instead of a random address like `7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU`, you can have one that starts with your chosen text like `booAgeFR7dKivYZb9w3kR911Up5caXwbXQ9msCYtu6`.
 
 ## Performance
 
-The generator can test approximately **250,000 wallet addresses per second**, though actual performance depends on your hardware specifications (CPU model, number of cores, and clock speed). Faster hardware with more CPU cores will generate addresses more quickly.
+The generator can test approximately **250,000 to 500,000+ wallet addresses per second**, depending on your hardware specifications (CPU model, number of cores, clock speed, and SIMD support). Faster hardware with more CPU cores and AVX2/AVX512 support will generate addresses more quickly.
 
 **Important:** The generator uses all available CPU cores at maximum capacity, which consumes significant system resources. It is **not recommended** to use your computer for other tasks while the generator is running, as this may slow down the generation process.
+
+### Performance Optimizations
+
+The generator includes several optimizations:
+- **Fast Base58 encoding** using Jump Crypto's Firedancer-optimized `fd_bs58` library (9-13x faster than standard Base58)
+- **SIMD acceleration** for cryptographic operations on x86_64 CPUs with AVX2/AVX512 support
+- **Case-sensitive matching** for precise vanity pattern control
+- **Optimized progress reporting** to minimize overhead
+
+The build script automatically enables CPU-specific optimizations (`target-cpu=native`) when building in release mode. For maximum performance on x86_64 systems, ensure your CPU supports AVX2 or AVX512 instructions.
 
 ## Security
 
@@ -49,6 +59,8 @@ npm start
 ```
 
 When prompted, enter the prefix you want to search for. For example, type `boo` if you want an address starting with "boo" and press Enter.
+
+**Note:** Prefix matching is case-sensitive. If you enter `nub` (lowercase), the generator will only match addresses starting with lowercase "nub". Enter `Nub` to match addresses starting with "Nub" (capital N).
 
 The tool will display real-time progress showing:
 - Number of addresses tested
@@ -96,9 +108,10 @@ Rare pattern matches are saved to `rare_wallets.txt`.
 
 **"Rust not found"** - Install Rust from [rustup.rs](https://rustup.rs/) and restart your terminal.
 
-**Slow performance** - Check your CPU usage - it should be at 100% on all cores. Performance varies based on hardware. Close other applications for best results.
+**Slow performance** - Check your CPU usage - it should be at 100% on all cores. Performance varies based on hardware. Close other applications for best results. Ensure you've built with `npm run build:rust` to enable release optimizations.
+
+**Performance tuning** - For profiling and optimization, you can use tools like `cargo flamegraph` to identify bottlenecks. The generator is optimized for x86_64 CPUs with SIMD support. On non-x86_64 architectures, performance will be lower but still functional.
 
 ## License
 
 MIT
-
